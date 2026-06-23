@@ -18,18 +18,9 @@ body{
   padding:24px 16px;
   text-align:center;
 }
-.header h1{
-  margin:0;
-  font-size:24px;
-}
-.header p{
-  margin:8px 0 0;
-}
-.wrap{
-  max-width:750px;
-  margin:auto;
-  padding:16px;
-}
+.header h1{margin:0;font-size:24px}
+.header p{margin:8px 0 0}
+.wrap{max-width:750px;margin:auto;padding:16px}
 .card{
   background:white;
   border-radius:18px;
@@ -37,17 +28,11 @@ body{
   margin-bottom:16px;
   box-shadow:0 6px 18px rgba(0,0,0,.08);
 }
-h2{
-  margin-top:0;
-  font-size:18px;
-}
+h2{margin-top:0;font-size:18px}
 .btn-grid{
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:repeat(2,1fr);
   gap:10px;
-}
-.btn-grid.three{
-  grid-template-columns:1fr;
 }
 button{
   border:0;
@@ -59,34 +44,29 @@ button{
   color:#075985;
 }
 button.selected{
-  background:linear-gradient(135deg,#0ea5e9,#ec4aa5);
+  background:linear-gradient(90deg,#0ea5e9,#ec4aa5);
   color:white;
 }
 .output{
-  background:#f9fafb;
-  border:1px solid #d1d5db;
+  background:#f8fafc;
+  border:1px solid #dbeafe;
   border-radius:14px;
   padding:14px;
-  min-height:140px;
-  font-size:17px;
-  line-height:1.5;
-  white-space:pre-wrap;
+  min-height:90px;
+  font-size:16px;
+  line-height:1.45;
 }
 .copy{
   width:100%;
-  margin-top:12px;
-  background:#111827;
+  margin-top:10px;
+  background:#ec4aa5;
   color:white;
 }
 .clear{
   width:100%;
   margin-top:10px;
-  background:#f3f4f6;
-  color:#111827;
-}
-.small{
-  color:#6b7280;
-  font-size:14px;
+  background:#64748b;
+  color:white;
 }
 </style>
 </head>
@@ -103,14 +83,14 @@ button.selected{
   <div class="card">
     <h2>Greeting</h2>
     <div class="btn-grid">
-      <button onclick="selectOption('greeting','morning',this)">Good Morning</button>
-      <button onclick="selectOption('greeting','afternoon',this)">Good Afternoon</button>
+      <button onclick="selectOption('greeting','Good morning',this)">Good Morning</button>
+      <button onclick="selectOption('greeting','Good afternoon',this)">Good Afternoon</button>
     </div>
   </div>
 
   <div class="card">
     <h2>Status</h2>
-    <div class="btn-grid three">
+    <div class="btn-grid">
       <button onclick="selectOption('status','behind',this)">Running Behind</button>
       <button onclick="selectOption('status','ahead',this)">Running Ahead</button>
       <button onclick="selectOption('status','ontime',this)">On Time</button>
@@ -120,10 +100,11 @@ button.selected{
   <div class="card">
     <h2>ETA</h2>
     <div class="btn-grid">
-      <button onclick="selectOption('eta','15 minutes',this)">15 Minutes Away</button>
-      <button onclick="selectOption('eta','30 minutes',this)">30 Minutes Away</button>
-      <button onclick="selectOption('eta','45 minutes',this)">45 Minutes Away</button>
-      <button onclick="selectOption('eta','1 hour',this)">1 Hour Away</button>
+      <button onclick="selectOption('eta','5-10 minutes away',this)">5-10 Minutes Away</button>
+      <button onclick="selectOption('eta','15 minutes away',this)">15 Minutes Away</button>
+      <button onclick="selectOption('eta','30 minutes away',this)">30 Minutes Away</button>
+      <button onclick="selectOption('eta','45 minutes away',this)">45 Minutes Away</button>
+      <button onclick="selectOption('eta','1 hour away',this)">1 Hour Away</button>
     </div>
   </div>
 
@@ -133,90 +114,62 @@ button.selected{
       Select a greeting, status, and ETA to generate the text.
     </div>
     <button class="copy" onclick="copyText()">Copy Text</button>
-    <button class="clear" onclick="clearSelections()">Clear</button>
-    <p class="small" id="copied"></p>
+    <button class="clear" onclick="clearAll()">Clear</button>
   </div>
 
 </div>
 
 <script>
 let selections = {
-  greeting: "",
-  status: "",
-  eta: ""
+  greeting:"",
+  status:"",
+  eta:""
 };
 
-function selectOption(type, value, btn){
-  selections[type] = value;
+function selectOption(type,value,btn){
+  selections[type]=value;
 
-  const card = btn.closest(".card");
-  card.querySelectorAll("button").forEach(button => {
-    button.classList.remove("selected");
-  });
-
+  const buttons = btn.parentElement.querySelectorAll("button");
+  buttons.forEach(b=>b.classList.remove("selected"));
   btn.classList.add("selected");
+
   generateText();
 }
 
 function generateText(){
-  const output = document.getElementById("output");
-  const copied = document.getElementById("copied");
-  copied.textContent = "";
+  const output=document.getElementById("output");
 
   if(!selections.greeting || !selections.status || !selections.eta){
-    output.textContent = "Select a greeting, status, and ETA to generate the text.";
+    output.textContent="Select a greeting, status, and ETA to generate the text.";
     return;
   }
 
-  const greet = selections.greeting === "morning" ? "Good morning" : "Good afternoon";
-  const etaText = `I am approximately ${selections.eta} away`;
+  let text="";
 
-  let text = "";
-
-  if(selections.status === "behind"){
-    text = `${greet}, this is Ashton from Shield Pest Appalachia. I wanted to let you know that I am running a little behind schedule today, but I am on the way. ${etaText} and will see you soon. I apologize for any inconvenience and appreciate your understanding. Thank you.`;
+  if(selections.status==="behind"){
+    text=`${selections.greeting}, this is Ashton from Shield Pest Appalachia. I apologize, I am running a little behind schedule, but I can head your way shortly and should be about ${selections.eta}.`;
   }
 
-  if(selections.status === "ahead"){
-    text = `${greet}, this is Ashton from Shield Pest Appalachia. I am running ahead of schedule and am on the way. ${etaText} and should arrive a little earlier than expected. See you soon, and thank you.`;
+  if(selections.status==="ahead"){
+    text=`${selections.greeting}, this is Ashton from Shield Pest Appalachia. I am running a little ahead of schedule and can head your way. I should be about ${selections.eta}.`;
   }
 
-  if(selections.status === "ontime"){
-    text = `${greet}, this is Ashton from Shield Pest Appalachia. I am on schedule and on the way to your service appointment. ${etaText} and look forward to seeing you soon. Thank you.`;
+  if(selections.status==="ontime"){
+    text=`${selections.greeting}, this is Ashton from Shield Pest Appalachia. I am on schedule and can head your way. I should be about ${selections.eta}.`;
   }
 
-  output.textContent = text;
+  output.textContent=text;
 }
 
 function copyText(){
-  const text = document.getElementById("output").textContent;
-  const copied = document.getElementById("copied");
-
-  if(text.includes("Select a greeting")){
-    copied.textContent = "Generate a text first.";
-    return;
-  }
-
-  navigator.clipboard.writeText(text).then(() => {
-    copied.textContent = "Copied!";
-  }).catch(() => {
-    copied.textContent = "Copy failed. Tap and hold the text to copy manually.";
-  });
+  const text=document.getElementById("output").textContent;
+  navigator.clipboard.writeText(text);
 }
 
-function clearSelections(){
-  selections = {
-    greeting: "",
-    status: "",
-    eta: ""
-  };
-
-  document.querySelectorAll("button").forEach(button => {
-    button.classList.remove("selected");
-  });
-
-  document.getElementById("output").textContent = "Select a greeting, status, and ETA to generate the text.";
-  document.getElementById("copied").textContent = "";
+function clearAll(){
+  selections={greeting:"",status:"",eta:""};
+  document.querySelectorAll("button").forEach(b=>b.classList.remove("selected"));
+  document.getElementById("output").textContent="Select a greeting, status, and ETA to generate the text.";
 }
 </script>
 
